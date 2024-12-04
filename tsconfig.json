@@ -1,0 +1,27 @@
+//{
+//  "compilerOptions": {
+//    "target": "ES6",                       // Set ECMAScript target version
+//    "module": "CommonJS",                  // Use CommonJS module system (required for Node.js)
+//    "strict": true,                        // Enable strict type-checking options
+//    "esModuleInterop": true,               // Enable esModuleInterop for CommonJS compatibility
+//    "skipLibCheck": true,                  // Skip type checking of declaration files
+//    "forceConsistentCasingInFileNames": true, // Ensure file names are case-consistent
+//    "moduleResolution": "node",            // Resolve modules in a Node.js fashion
+//    "rootDir": "./src",                    // Set the root directory for source files
+//    "outDir": "./dist"                     // Set the output directory for compiled files
+//  },
+//  "include": ["src/**/*"],                 // Include all files in the src directory
+//  "exclude": ["node_modules"]              // Exclude node_modules directory
+//}
+
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "CommonJS",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
