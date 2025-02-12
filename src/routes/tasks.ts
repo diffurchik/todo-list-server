@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+import {createUserTask} from "../db/db";
 
 interface Task {
     id: string
@@ -13,15 +14,21 @@ taskRouter.get('/', (req: Request, res: Response) => {
     res.json(tasks);
 })
 
-taskRouter.post('/', (req: Request, res: Response): Response => {
+taskRouter.post('/', async (req: Request, res: Response): Promise<Response> => {
     const { title } = req.body;
-    console.log(title)
+    console.log(title);
+
     if (!title) {
         return res.status(400).json({ error: 'Title is required' });
     }
-    const newTask = {id: Date.now().toString(), title, completed: false};
-    tasks.push(newTask);
-    return res.status(201).json({ message: 'Task was created', task: { title, completed: false } });
+
+    try {
+        const newTask = await createUserTask(title);
+        return res.status(201).json({ message: 'Task was created', task: newTask });
+    } catch (error) {
+        console.error('Error creating task', error);
+        return res.status(500).json({ error: 'Error creating task' });
+    }
 });
 
 taskRouter.put('/:id', (req: Request, res: Response): Response => {
