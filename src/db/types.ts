@@ -2,7 +2,7 @@ export type Task = {
     id: number;
     title: string;
     checked?: boolean;
-    priority?: number;
-    description?: string;
+    priority: number | null;
+    description: string | null;
     dueDate?: Date;
 }

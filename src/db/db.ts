@@ -5,7 +5,6 @@ import {Task} from "./types";
 const prisma = new PrismaClient();
 
 export async function createUserTask(title: string, description?: string, priority: number = 3) {
-    console.log('task will be created');
     try {
         const newTask = await prisma.userTask.create({
             data: {
@@ -24,24 +23,25 @@ export async function createUserTask(title: string, description?: string, priori
     }
 }
 
-export async function updateUserTask(input: Task) {
-    const { id, checked, priority, description, dueDate } = input;
-
-    const updateData: Record<string, unknown> = {};
-    if (checked !== undefined) updateData.checked = checked;
-    if (priority !== undefined) updateData.priority = priority;
-    if (description !== undefined) updateData.description = description;
-    if (dueDate !== undefined) updateData.dueDate = dueDate;
-
+export async function getAllTasks() {
     try {
-        const updatedTask = await prisma.userTask.update({
-            where: { id },
-            data: updateData,
-        });
-        console.log('Task updated:', updatedTask);
-        return updatedTask;
-    } catch (error) {
-        console.error('Error updating task:', error);
-        throw error;
+        return await prisma.userTask.findMany({
+            where: {checked: false}
+        })
+    } catch (err) {
+        console.error('Error getting all tasks:', err);
     }
+}
+
+export async function updateUserTask(id: number, payload: Partial<Pick<Task, 'checked' | 'title'>>): Promise<Task | null> {
+    const task = await prisma.userTask.findUnique({ where: { id } });
+
+    if (!task) return null;
+
+    const updatedTask = await prisma.userTask.update({
+        where: { id },
+        data: payload, // `{ checked: true }` or `{ title: 'New Title' }`
+    });
+
+    return updatedTask;
 }
