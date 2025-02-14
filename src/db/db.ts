@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import {PrismaClient} from '@prisma/client';
 import Tasks from "../routes/tasks";
 import {Task} from "./types";
 
@@ -11,7 +11,7 @@ export async function createUserTask(title: string, description?: string, priori
                 title,
                 description,
                 priority,
-                due_date: new Date('2025-03-15T10:00:00Z'),
+                due_date: new Date(),
             },
         });
         console.log('Task created:', newTask);
@@ -33,15 +33,41 @@ export async function getAllTasks() {
     }
 }
 
-export async function updateUserTask(id: number, payload: Partial<Pick<Task, 'checked' | 'title'>>): Promise<Task | null> {
-    const task = await prisma.userTask.findUnique({ where: { id } });
+export async function updateUserTask(id: number, payload: Partial<Pick<Task, 'checked' | 'title' | 'dueDate'>>): Promise<Task | null> {
+    const task = await prisma.userTask.findUnique({where: {id}});
 
     if (!task) return null;
 
+    if(Object.keys(payload)[0] === 'dueDate'){
+        const updatedTask = await prisma.userTask.update({
+            where: {id},
+            data: {due_date: payload.dueDate},
+        });
+        return updatedTask;
+    }
+
     const updatedTask = await prisma.userTask.update({
-        where: { id },
-        data: payload, // `{ checked: true }` or `{ title: 'New Title' }`
+        where: {id},
+        data: payload,
     });
 
     return updatedTask;
+}
+
+export async function getTodayTasks() {
+    try {
+        return await prisma.userTask.findMany({where: {checked: false, due_date: new Date()}});
+    } catch (e) {
+        console.error('Error getting tasks:', e);
+    }
+}
+
+export async function getOutdatedTasks() {
+    const date = new Date();
+    date.setDate(date.getDate() - 1);
+    try {
+        return await prisma.userTask.findMany({where: {checked: false, due_date: date}});
+    } catch (err) {
+        console.error('Error getting tasks:', err);
+    }
 }

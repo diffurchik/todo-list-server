@@ -42,7 +42,7 @@ taskRouter.post('/', async (req: Request, res: Response): Promise<Response> => {
 
 taskRouter.put('/:id', async (req: Request, res: Response): Promise<Response> => {
     const {id} = req.params;
-    const payload: Partial<Pick<Task, 'checked' | 'title'>> = req.body;
+    const payload: Partial<Pick<Task, 'checked' | 'title' | 'dueDate'>> = req.body;
     const taskId = Number(id)
     if (isNaN(taskId)) {
         return res.status(400).json({ error: 'Invalid task ID' });
